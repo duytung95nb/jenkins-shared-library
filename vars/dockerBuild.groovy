@@ -13,13 +13,13 @@ def build(String appName) {
     writeFile file:"docker-compose.yaml", text: scriptcontents
 
     sh """
-        commit=$(git rev-parse HEAD) serviceName="${appName}" docker-compose build
+        commit=${env.GIT_COMMIT} serviceName="${appName}" docker-compose build
     """
 }
 
 def push(String appName) {
     sh """
-        docker push "${DOCKER_REGISTRY_NAMESPACE}/${appName}-nginx:${tag}"
-        docker push "${DOCKER_REGISTRY_NAMESPACE}/${appName}:${tag}"
+        docker push "${DOCKER_REGISTRY_NAMESPACE}/${appName}-nginx:${env.GIT_COMMIT}"
+        docker push "${DOCKER_REGISTRY_NAMESPACE}/${appName}:${env.GIT_COMMIT}"
     """
 }
