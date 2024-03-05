@@ -2,7 +2,7 @@ version: "3.8"
 services:
   jenkins:
     build:
-      dockerfile: CustomJenkinsDockerfile
+      dockerfile: JenkinsControllerDockerfile
     privileged: true
     user: root
     ports:
@@ -13,11 +13,16 @@ services:
       - ./jenkins_configuration:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
   agent:
-    image: jenkins/ssh-agent:jdk11
+    build:
+      dockerfile: JenkinsAgentDockerfile
     privileged: true
     user: root
     container_name: agent
     expose:
       - 22
+    network_mode: "host"
     environment:
+      - DOCKER_HOST=tcp://127.0.0.1:2375
       - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC3y2DND9Uc3VyBXnSIVOfHS8fQ9GwbyrnBmiEz3QNbbZaIzdLLzsOEbNNIGZ3au6r93pm1V4fsHltxTBpcj9EeqbnRt04+Hl5YbeSdUtm/jt2w+daVdIpsLKog/GqqjdxbaArEHxjNjzQkN3BJnE14ETkQeao+ucXfGl/SDtH9WSQnyOuFfmzF6Kmd7Nl3B3N3/R7PPxqnAv14ZDmdyY0Y/er/1e4cGca1xtF5tdeRQ++gAp3J/AaAzJKKf1CqTi/BGZCF29BHualOJx9F8Y0oka1JWIjA/YYfuxJhyAcx92rytECXFNEPv3klwilqfV6JrrBAPMjQ7kCW7nbTi4Nv2WuLOQmXTRgtEdUAi22qM2oIgrMo+npLT6fkX0tU7T/AgxmTKIghmgk53qPGB6t+PIRBEiOhMOKkcw/qUmdtYjQcBgBmCxXeZiw33JoiPUwc/gEDCU+myy80aQuMSCKBkmqzRU+PG7he7puNpJZj6LbGMB/2Zsy8Xz/vAGYGFPU= john@Johns-MBP
+    volumes:
+      - ~/.docker/run/docker.sock:/var/run/docker.sock
