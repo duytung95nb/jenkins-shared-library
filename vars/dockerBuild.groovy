@@ -1,5 +1,5 @@
 def build(String appName) {
-    sh "commit=${env.GIT_COMMIT} serviceName=${appName} docker compose build"
+    sh "commit=${env.GIT_COMMIT} serviceName=${appName} docker compose build --no-cache"
 }
 
 def push(String appName) {
